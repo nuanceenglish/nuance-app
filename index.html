@@ -455,7 +455,10 @@ function stopAll(){
 }
 
 function speakOne(text,btnEl){
-  stopAll(); isPlaying=true;
+  synth.cancel();
+  isPlaying=false;
+  document.querySelectorAll('.btn-listen-sm').forEach(b=>b.classList.remove('playing'));
+  isPlaying=true;
   if(btnEl) btnEl.classList.add('playing');
   const u=new SpeechSynthesisUtterance(text);
   u.lang='en-GB'; u.rate=0.85;
