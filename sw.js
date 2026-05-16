@@ -1,5 +1,5 @@
-const CACHE = 'nuance-v1';
-const ASSETS = ['/', '/index.html', '/manifest.json'];
+const CACHE = 'nuance-v3';
+const ASSETS = ['/'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -14,7 +14,9 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
-  );
+  if (e.request.url.includes('supabase.co')) {
+    e.respondWith(fetch(e.request));
+    return;
+  }
+  e.respondWith(fetch(e.request));
 });
