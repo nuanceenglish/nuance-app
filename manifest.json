@@ -1,0 +1,22 @@
+{
+  "name": "Nuance — Learn English Naturally",
+  "short_name": "Nuance",
+  "description": "Learn English naturally with daily expressions, idioms, and phrasal verbs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f0e8",
+  "theme_color": "#f5f0e8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

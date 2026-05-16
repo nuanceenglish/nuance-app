@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#f5f0e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nuance">
+<meta name="description" content="Learn English naturally with Nuance.">
+<link rel="manifest" href="manifest.json">
 <title>Nuance</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -18,6 +24,8 @@
   --text-muted: #7a7060;
   --text-dim: #c0bab0;
   --active: #3DBA6F;
+  --sidebar-w: 210px;
+  --bottom-nav-h: 60px;
 }
 
 body {
@@ -25,10 +33,11 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
-/* Paper grain — always on in light, off in dark */
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -47,17 +56,18 @@ body.dark {
   --text-muted: #777;
   --text-dim: #333;
 }
-
 body.dark::before { opacity: 0; }
 
+/* ── LAYOUT ── */
 .layout {
   display: grid;
-  grid-template-columns: 210px 1fr;
+  grid-template-columns: var(--sidebar-w) 1fr;
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative; z-index: 1;
 }
 
-/* ── SIDEBAR ── */
+/* ── SIDEBAR (desktop) ── */
 .sidebar {
   background: var(--surface);
   border-right: 1px solid var(--border);
@@ -67,6 +77,7 @@ body.dark::before { opacity: 0; }
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
 }
 
@@ -75,325 +86,221 @@ body.dark::before { opacity: 0; }
   border-bottom: 1px solid var(--border);
   margin-bottom: 14px;
 }
-
-.brand-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
-}
-
-.brand-sub {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-top: 3px;
-  font-weight: 300;
-}
+.brand-name { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+.brand-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 3px; font-weight: 300; }
 
 .nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 20px;
-  cursor: pointer;
-  transition: all 0.12s;
-  border-left: 2px solid transparent;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 20px; cursor: pointer;
+  transition: all 0.12s; border-left: 2px solid transparent;
 }
-
 .nav-item:hover { background: rgba(0,0,0,0.03); }
 body.dark .nav-item:hover { background: rgba(255,255,255,0.03); }
 .nav-item.active { border-left-color: var(--active); background: rgba(0,0,0,0.04); }
 body.dark .nav-item.active { background: rgba(255,255,255,0.04); }
-
 .nav-text { font-size: 0.8rem; color: var(--text-muted); }
 .nav-item.active .nav-text { color: var(--text); font-weight: 500; }
 .nav-count { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: var(--text-dim); }
 .nav-divider { height: 1px; background: var(--border); margin: 10px 0; }
 
 .sidebar-settings {
-  padding: 14px 20px;
-  border-top: 1px solid var(--border);
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding: 14px 20px; border-top: 1px solid var(--border);
+  margin-top: auto; display: flex; flex-direction: column; gap: 12px;
 }
-
-.setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
+.setting-row { display: flex; align-items: center; justify-content: space-between; }
 .setting-label { font-size: 0.72rem; color: var(--text-muted); }
 
 .toggle {
-  width: 36px; height: 20px;
-  background: var(--border-vis);
-  border-radius: 10px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s;
-  flex-shrink: 0;
+  width: 36px; height: 20px; background: var(--border-vis);
+  border-radius: 10px; position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
 }
 .toggle.on { background: var(--active); }
 .toggle::after {
-  content: '';
-  position: absolute;
-  width: 14px; height: 14px;
-  background: #fff;
-  border-radius: 50%;
-  top: 3px; left: 3px;
-  transition: transform 0.2s;
+  content: ''; position: absolute;
+  width: 14px; height: 14px; background: #fff;
+  border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s;
 }
 .toggle.on::after { transform: translateX(16px); }
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: var(--bottom-nav-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  height: 100%;
+  min-width: max-content;
+  padding: 0 4px;
+}
+
+.bottom-nav-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; padding: 0 14px;
+  cursor: pointer; transition: all 0.12s;
+  border-top: 2px solid transparent;
+  white-space: nowrap;
+}
+.bottom-nav-item.active { border-top-color: var(--active); }
+.bottom-nav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border-vis);
+}
+.bottom-nav-item.active .bottom-nav-dot { background: var(--active); }
+.bottom-nav-label { font-size: 0.62rem; color: var(--text-muted); font-weight: 400; }
+.bottom-nav-item.active .bottom-nav-label { color: var(--text); font-weight: 600; }
+
+/* Mobile top bar */
+.mobile-topbar {
+  display: none;
+  position: sticky; top: 0; z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  align-items: center; justify-content: space-between;
+}
+.mobile-brand { font-size: 1rem; font-weight: 700; color: var(--text); }
+.mobile-controls { display: flex; align-items: center; gap: 12px; }
+.mobile-toggle-btn {
+  font-size: 0.7rem; font-family: 'Space Mono', monospace;
+  color: var(--text-muted); background: none; border: 1px solid var(--border-vis);
+  border-radius: 3px; padding: 5px 10px; cursor: pointer;
+}
 
 /* ── MAIN ── */
 .main { padding: 44px 56px 80px; max-width: 860px; }
 
 .page-header {
-  margin-bottom: 36px;
-  padding-bottom: 18px;
+  margin-bottom: 36px; padding-bottom: 18px;
   border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  display: flex; align-items: flex-end; justify-content: space-between;
 }
-
 .page-cat {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--active);
-  margin-bottom: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.55rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--active); margin-bottom: 4px;
 }
 .page-sub { font-size: 0.82rem; color: var(--text-muted); font-weight: 300; }
 .progress-indicator { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--text-muted); }
 
 /* ── SWIPE ── */
 .swipe-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  cursor: grab;
-  user-select: none;
-  width: 100%;
+  position: relative; overflow: hidden;
+  border-radius: 10px; cursor: grab;
+  user-select: none; width: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 .swipe-container:active { cursor: grabbing; }
-
-.swipe-track {
-  display: flex;
-  width: 100%;
-  will-change: transform;
-}
-
-.swipe-slide {
-  flex: 0 0 100%;
-  width: 100%;
-  min-width: 0;
-}
+.swipe-track { display: flex; width: 100%; will-change: transform; }
+.swipe-slide { flex: 0 0 100%; width: 100%; min-width: 0; }
 
 /* ── CARD ── */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border-vis);
-  border-radius: 10px;
-  overflow: hidden;
+  background: var(--card); border: 1px solid var(--border-vis);
+  border-radius: 10px; overflow: hidden;
   box-shadow: 0 1px 12px rgba(0,0,0,0.07);
 }
-
 body.dark .card { box-shadow: 0 2px 20px rgba(0,0,0,0.4); }
-
 .card-top-bar { height: 4px; }
 .card-body { padding: 32px 36px 28px; }
 
-/* Hero */
-.hero-block { margin-bottom: 28px; }
-
 .section-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 10px;
+  font-family: 'Space Mono', monospace; font-size: 0.52rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px;
 }
 
+.hero-block { margin-bottom: 28px; }
 .hero-sentence {
-  font-size: 1.9rem;
-  font-weight: 700;
-  line-height: 1.35;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  margin-bottom: 14px;
+  font-size: 1.9rem; font-weight: 700; line-height: 1.35;
+  color: var(--text); letter-spacing: -0.01em; margin-bottom: 14px;
 }
-
-.hero-sentence .hl {
-  color: #000;
-  padding: 1px 6px;
-  border-radius: 2px;
-}
+.hero-sentence .hl { color: #000; padding: 1px 6px; border-radius: 2px; }
 
 .btn-listen-sm {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border: 1px solid var(--border-vis);
-  border-radius: 3px;
-  background: transparent;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border: 1px solid var(--border-vis);
+  border-radius: 3px; background: transparent;
+  font-family: 'Space Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 40px;
+}
+.btn-listen-sm:hover, .btn-listen-sm.playing {
+  border-color: var(--active); color: var(--active);
 }
 
-.btn-listen-sm:hover { border-color: var(--active); color: var(--active); }
-.btn-listen-sm.playing { border-color: var(--active); color: var(--active); }
-
-/* Phrase */
 .phrase-block {
-  padding: 20px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 24px;
+  padding: 20px 0; border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); margin-bottom: 24px;
 }
-
 .phrase-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 14px; flex-wrap: wrap;
 }
-
-.phrase-text {
-  font-size: 1.8rem;
-  font-weight: 700;
-  line-height: 1.15;
-}
+.phrase-text { font-size: 1.8rem; font-weight: 700; line-height: 1.15; }
 
 .meaning-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  margin-bottom: 0;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; padding: 4px 0;
 }
-
 .meaning-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  font-family: 'Space Mono', monospace; font-size: 0.52rem;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted);
 }
-
-.meaning-toggle-icon { font-size: 0.65rem; color: var(--text-muted); transition: transform 0.2s; }
-
+.meaning-toggle-icon { font-size: 0.65rem; color: var(--text-muted); }
 .meaning-body { margin-top: 10px; }
+.meaning-text { font-size: 1rem; line-height: 1.55; color: var(--text); font-weight: 300; }
 
-.meaning-text {
-  font-size: 1rem;
-  line-height: 1.55;
-  color: var(--text);
-  font-weight: 300;
-}
-
-/* Examples */
 .example-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 16px 0;
-  border-top: 1px solid var(--border);
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 14px;
+  padding: 16px 0; border-top: 1px solid var(--border);
 }
-
-.example-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  flex: 1;
-}
-
-.example-quote {
-  font-size: 1.4rem;
-  line-height: 1;
-  margin-top: 2px;
-  flex-shrink: 0;
-  font-weight: 700;
-  opacity: 0.35;
-}
-
-.example-text {
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--text);
-}
-
+.example-left { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
+.example-quote { font-size: 1.4rem; line-height: 1; margin-top: 2px; flex-shrink: 0; font-weight: 700; opacity: 0.35; }
+.example-text { font-size: 1rem; font-weight: 400; line-height: 1.55; color: var(--text); }
 .example-text .hl { font-weight: 600; }
 
-/* Audio bar */
 .audio-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 20px; padding-top: 20px;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
 }
-
 .btn-play-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #000;
-  cursor: pointer;
-  transition: opacity 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; border: none; border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #000; cursor: pointer; transition: opacity 0.15s;
+  min-height: 44px; -webkit-tap-highlight-color: transparent;
 }
 .btn-play-all:hover { opacity: 0.82; }
 
 .btn-stop {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-vis);
-  border-radius: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 20px; background: transparent; color: var(--text-muted);
+  border: 1px solid var(--border-vis); border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s; min-height: 44px;
 }
 .btn-stop:hover { border-color: var(--text-muted); color: var(--text); }
 
 .now-playing {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  color: var(--active);
-  letter-spacing: 0.08em;
-  display: none;
-  align-items: center;
-  gap: 7px;
+  font-family: 'Space Mono', monospace; font-size: 0.58rem;
+  color: var(--active); letter-spacing: 0.08em;
+  display: none; align-items: center; gap: 7px;
 }
 .now-playing.show { display: flex; }
 
@@ -406,121 +313,127 @@ body.dark .card { box-shadow: 0 2px 20px rgba(0,0,0,0.4); }
 .wave span:nth-child(5) { height: 3px; animation-delay:0.05s; }
 @keyframes wv { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
 
-/* ── LOCK CARD ── */
+/* Lock card */
 .lock-card {
-  background: var(--card);
-  border: 1px solid var(--border-vis);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 1px 12px rgba(0,0,0,0.07);
-  position: relative;
+  background: var(--card); border: 1px solid var(--border-vis);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.07); position: relative;
 }
-
 body.dark .lock-card { box-shadow: 0 2px 20px rgba(0,0,0,0.4); }
-
 .lock-card-inner {
-  padding: 32px 36px;
-  filter: blur(4px);
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.4;
+  padding: 32px 36px; filter: blur(4px);
+  pointer-events: none; user-select: none; opacity: 0.4;
 }
-
 .lock-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background: rgba(245,240,232,0.6);
-  backdrop-filter: blur(2px);
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  background: rgba(245,240,232,0.7); backdrop-filter: blur(2px);
 }
-
-body.dark .lock-overlay { background: rgba(10,10,10,0.6); }
-
+body.dark .lock-overlay { background: rgba(10,10,10,0.7); }
 .lock-icon { font-size: 1.8rem; opacity: 0.5; }
-
-.lock-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-  text-align: center;
-}
-
-.lock-sub {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-align: center;
-  font-weight: 300;
-}
-
+.lock-title { font-size: 1rem; font-weight: 600; color: var(--text); text-align: center; }
+.lock-sub { font-size: 0.8rem; color: var(--text-muted); text-align: center; font-weight: 300; }
 .btn-unlock {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 24px;
-  background: var(--active);
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  margin-top: 4px;
-  transition: opacity 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border: none; border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #000; cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
+  min-height: 44px;
 }
 .btn-unlock:hover { opacity: 0.85; }
 
 /* Nav row */
 .nav-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 24px;
+  display: flex; align-items: center;
+  justify-content: space-between; margin-top: 24px;
 }
-
 .btn-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: transparent;
-  border: 1px solid var(--border-vis);
-  border-radius: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; background: transparent;
+  border: 1px solid var(--border-vis); border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+  min-height: 44px; -webkit-tap-highlight-color: transparent;
 }
 .btn-nav:hover:not(:disabled) { border-color: var(--active); color: var(--active); }
 .btn-nav:disabled { opacity: 0.2; cursor: not-allowed; }
 
 .nav-dots { display: flex; gap: 6px; align-items: center; }
 .dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--border-vis);
-  transition: background 0.2s, transform 0.2s;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-vis); transition: background 0.2s, transform 0.2s;
   cursor: pointer;
 }
 .dot.active { background: var(--active); transform: scale(1.3); }
 .dot.locked { opacity: 0.35; cursor: default; }
 
 .empty { padding: 60px 0; color: var(--text-muted); font-size: 0.85rem; font-weight: 300; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .bottom-nav { display: flex; }
+  .mobile-topbar { display: flex; }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 16px 16px calc(var(--bottom-nav-h) + 20px);
+    max-width: 100%;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
+
+  .page-cat { font-size: 0.5rem; }
+  .page-sub { font-size: 0.78rem; }
+
+  .hero-sentence { font-size: 1.35rem; }
+  .phrase-text { font-size: 1.4rem; }
+  .meaning-text { font-size: 0.92rem; }
+  .example-text { font-size: 0.92rem; }
+
+  .card-body { padding: 20px 18px 18px; }
+  .lock-card-inner { padding: 20px 18px; }
+
+  .phrase-row { gap: 10px; }
+
+  .audio-bar { gap: 8px; }
+  .btn-play-all { padding: 10px 16px; font-size: 0.6rem; }
+  .btn-stop { padding: 10px 14px; font-size: 0.6rem; }
+
+  .btn-nav { padding: 10px 14px; font-size: 0.6rem; }
+
+  .nav-row { margin-top: 16px; }
+}
+
+@media (max-width: 380px) {
+  .hero-sentence { font-size: 1.15rem; }
+  .phrase-text { font-size: 1.2rem; }
+  .card-body { padding: 16px 14px; }
+}
 </style>
 </head>
 <body>
 <div class="layout">
 
-  <!-- SIDEBAR -->
+  <!-- MOBILE TOP BAR -->
+  <div class="mobile-topbar">
+    <div class="mobile-brand">Nuance</div>
+    <div class="mobile-controls">
+      <button class="mobile-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 dark</button>
+      <button class="mobile-toggle-btn" onclick="toggleAutoPlay()" id="autoBtn">⏸ auto</button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR (desktop) -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-name">Nuance</div>
@@ -594,241 +507,89 @@ body.dark .lock-overlay { background: rgba(10,10,10,0.6); }
   </main>
 </div>
 
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bottom-nav-item active" onclick="switchCat('daily')" id="bnav-daily">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Daily</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('mistakes')" id="bnav-mistakes">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Mistakes</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('phrasal')" id="bnav-phrasal">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Phrasal</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('advanced')" id="bnav-advanced">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Advanced</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('idioms')" id="bnav-idioms">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Idioms</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('shadowing')" id="bnav-shadowing">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Shadow</span>
+    </div>
+    <div class="bottom-nav-item" onclick="switchCat('favorites')" id="bnav-favorites">
+      <div class="bottom-nav-dot"></div>
+      <span class="bottom-nav-label">Saved</span>
+    </div>
+  </div>
+</nav>
+
 <script>
-const FREE_LIMIT = 3; // first N cards are free per category
+const FREE_LIMIT = 3;
 
 const CATS = {
   daily: {
-    title: 'Daily Expressions',
-    sub: 'Natural expressions for real-life conversations.',
-    color: '#3DBA6F',
+    title: 'Daily Expressions', sub: 'Natural expressions for real-life conversations.', color: '#3DBA6F',
     items: [
-      {
-        phrase: 'fair enough',
-        hero: "You have your reasons — [fair enough], I won't push further.",
-        meaning: 'Used to show you accept or agree with what someone has said.',
-        examples: [
-          "You don't want to go? [Fair enough], we can do it another time.",
-          "I think we should leave early. — [Fair enough].",
-        ]
-      },
-      {
-        phrase: 'how do I put this',
-        hero: "[How do I put this]... the argument works on paper but feels hollow.",
-        meaning: 'Used when searching for the right words to say something sensitive.',
-        examples: [
-          "[How do I put this] — I don't think we're on the same page.",
-          "I'm not comfortable with that plan. [How do I put this] without sounding harsh.",
-        ]
-      },
-      {
-        phrase: 'to be honest',
-        hero: "[To be honest], I wasn't expecting it to work out this well.",
-        meaning: 'Used to introduce a frank or personal opinion.',
-        examples: [
-          "[To be honest], I don't think that's the right approach.",
-          "[To be honest with you], I had my doubts at first.",
-        ]
-      },
-      {
-        phrase: 'now that you mention it',
-        hero: "[Now that you mention it], I did notice something was off.",
-        meaning: 'Used when someone says something that makes you remember or realize something.',
-        examples: [
-          "[Now that you mention it], he did seem distracted during the meeting.",
-          "I hadn't thought about it, but [now that you mention it], you're right.",
-        ]
-      },
-      {
-        phrase: 'at the end of the day',
-        hero: "[At the end of the day], what matters is that you tried your best.",
-        meaning: 'Used to introduce the most important point or final conclusion.',
-        examples: [
-          "[At the end of the day], it's your decision and no one else's.",
-          "We can debate all we want, but [at the end of the day], results speak louder.",
-        ]
-      },
+      { phrase: 'fair enough', hero: "You have your reasons — [fair enough], I won't push further.", meaning: 'Used to show you accept or agree with what someone has said.', examples: ["You don't want to go? [Fair enough], we can do it another time.", "I think we should leave early. — [Fair enough]."] },
+      { phrase: 'how do I put this', hero: "[How do I put this]... the argument works on paper but feels hollow.", meaning: 'Used when searching for the right words to say something sensitive.', examples: ["[How do I put this] — I don't think we're on the same page.", "I'm not comfortable with that plan. [How do I put this] without sounding harsh."] },
+      { phrase: 'to be honest', hero: "[To be honest], I wasn't expecting it to work out this well.", meaning: 'Used to introduce a frank or personal opinion.', examples: ["[To be honest], I don't think that's the right approach.", "[To be honest with you], I had my doubts at first."] },
+      { phrase: 'now that you mention it', hero: "[Now that you mention it], I did notice something was off.", meaning: 'Used when something someone said makes you remember or realize something.', examples: ["[Now that you mention it], he did seem distracted during the meeting.", "I hadn't thought about it, but [now that you mention it], you're right."] },
+      { phrase: 'at the end of the day', hero: "[At the end of the day], what matters is that you tried your best.", meaning: 'Used to introduce the most important point or final conclusion.', examples: ["[At the end of the day], it's your decision and no one else's.", "We can debate all we want, but [at the end of the day], results speak louder."] },
     ]
   },
   mistakes: {
-    title: 'Common Mistakes',
-    sub: 'Fix the errors that give you away.',
-    color: '#FF5C3A',
+    title: 'Common Mistakes', sub: 'Fix the errors that give you away.', color: '#FF5C3A',
     items: [
-      {
-        phrase: 'interested IN (not "to")',
-        hero: "I am [interested in] learning languages — not 'interested to learn'.",
-        meaning: 'In English we always say "interested IN" something. Never "interested to."',
-        examples: [
-          "She is [interested in] this job. ✓  (NOT: interested to this job ✗)",
-          "They are [interested in] traveling together next year.",
-        ]
-      },
-      {
-        phrase: 'make vs do',
-        hero: "Can you [make a decision] soon? Stop saying 'do a decision'.",
-        meaning: '"Make" creates or produces something. "Do" is for tasks and activities.',
-        examples: [
-          "I need to [make a plan] before the meeting. (NOT: do a plan ✗)",
-          "She always [does her best] — and that means a lot.",
-        ]
-      },
-      {
-        phrase: 'say vs tell',
-        hero: "She [told me] the news — not 'said me' the news.",
-        meaning: '"Tell" always needs a person: tell someone something. "Say" does not.',
-        examples: [
-          "He [told me] he was leaving. (NOT: said me ✗)",
-          "She [said] it was fine — but her face told a different story.",
-        ]
-      },
-      {
-        phrase: 'borrow vs lend',
-        hero: "Can you [lend me] your pen? — not 'borrow me your pen'.",
-        meaning: '"Lend" = give to someone temporarily. "Borrow" = take from someone temporarily.',
-        examples: [
-          "Can I [borrow] your umbrella? I'll return it tomorrow.",
-          "He [lent me] his jacket when it got cold.",
-        ]
-      },
+      { phrase: 'interested IN (not "to")', hero: "I am [interested in] learning languages — not 'interested to learn'.", meaning: 'In English we always say "interested IN" something. Never "interested to."', examples: ["She is [interested in] this job. ✓  (NOT: interested to this job ✗)", "They are [interested in] traveling together next year."] },
+      { phrase: 'make vs do', hero: "Can you [make a decision] soon? Stop saying 'do a decision'.", meaning: '"Make" creates or produces something. "Do" is for tasks and activities.', examples: ["I need to [make a plan] before the meeting. (NOT: do a plan ✗)", "She always [does her best] — and that means a lot."] },
+      { phrase: 'say vs tell', hero: "She [told me] the news — not 'said me' the news.", meaning: '"Tell" always needs a person: tell someone something. "Say" does not.', examples: ["He [told me] he was leaving. (NOT: said me ✗)", "She [said] it was fine — but her face told a different story."] },
+      { phrase: 'borrow vs lend', hero: "Can you [lend me] your pen? — not 'borrow me your pen'.", meaning: '"Lend" = give temporarily. "Borrow" = take temporarily.', examples: ["Can I [borrow] your umbrella? I'll return it tomorrow.", "He [lent me] his jacket when it got cold."] },
     ]
   },
   phrasal: {
-    title: 'Phrasal Words',
-    sub: 'Master phrases native speakers use every day.',
-    color: '#F5C518',
+    title: 'Phrasal Words', sub: 'Master phrases native speakers use every day.', color: '#F5C518',
     items: [
-      {
-        phrase: 'cut to the chase',
-        hero: "Let's [cut to the chase] — did we get the job or not?",
-        meaning: 'Stop wasting time and get straight to the important point.',
-        examples: [
-          "I could see she was nervous, so I just [cut to the chase] and asked directly.",
-          "He tends to ramble, so I asked him to [cut to the chase].",
-        ]
-      },
-      {
-        phrase: 'get the hang of it',
-        hero: "Don't worry, you'll [get the hang of it] after a few tries.",
-        meaning: 'To learn how to do something; to become comfortable with a skill.',
-        examples: [
-          "It took me a week but I finally [got the hang of] driving on the left.",
-          "Once you [get the hang of it], the software is actually quite intuitive.",
-        ]
-      },
-      {
-        phrase: 'bring it up',
-        hero: "I didn't want to [bring it up] during dinner, but we really need to talk.",
-        meaning: 'To mention or introduce a topic in conversation.',
-        examples: [
-          "She finally [brought it up] — the issue she'd been avoiding for weeks.",
-          "Don't [bring it up] unless he asks — it'll only cause tension.",
-        ]
-      },
-      {
-        phrase: 'fall through',
-        hero: "The deal [fell through] at the last minute — we were all disappointed.",
-        meaning: 'When a plan or agreement fails to happen or be completed.',
-        examples: [
-          "Our trip to Barcelona [fell through] because of the strike.",
-          "I was counting on that job offer, but it [fell through].",
-        ]
-      },
-      {
-        phrase: 'put off',
-        hero: "She keeps [putting off] the conversation she knows she needs to have.",
-        meaning: 'To delay doing something; to postpone.',
-        examples: [
-          "Stop [putting it off] — just send the email.",
-          "He [put off] going to the doctor for months.",
-        ]
-      },
+      { phrase: 'cut to the chase', hero: "Let's [cut to the chase] — did we get the job or not?", meaning: 'Stop wasting time and get straight to the important point.', examples: ["I could see she was nervous, so I just [cut to the chase] and asked directly.", "He tends to ramble, so I asked him to [cut to the chase]."] },
+      { phrase: 'get the hang of it', hero: "Don't worry, you'll [get the hang of it] after a few tries.", meaning: 'To learn how to do something; to become comfortable with a skill.', examples: ["It took me a week but I finally [got the hang of] driving on the left.", "Once you [get the hang of it], the software is actually quite intuitive."] },
+      { phrase: 'bring it up', hero: "I didn't want to [bring it up] during dinner, but we really need to talk.", meaning: 'To mention or introduce a topic in conversation.', examples: ["She finally [brought it up] — the issue she'd been avoiding for weeks.", "Don't [bring it up] unless he asks — it'll only cause tension."] },
+      { phrase: 'fall through', hero: "The deal [fell through] at the last minute — we were all disappointed.", meaning: 'When a plan or agreement fails to happen or be completed.', examples: ["Our trip to Barcelona [fell through] because of the strike.", "I was counting on that job offer, but it [fell through]."] },
+      { phrase: 'put off', hero: "She keeps [putting off] the conversation she knows she needs to have.", meaning: 'To delay doing something; to postpone.', examples: ["Stop [putting it off] — just send the email.", "He [put off] going to the doctor for months."] },
     ]
   },
   advanced: {
-    title: 'Advanced Words',
-    sub: 'Elevate your vocabulary with words native speakers actually use.',
-    color: '#4A9EFF',
+    title: 'Advanced Words', sub: 'Elevate your vocabulary with words native speakers actually use.', color: '#4A9EFF',
     items: [
-      {
-        phrase: 'nuance',
-        hero: "There's a lot of [nuance] in the way he answered that question.",
-        meaning: 'A subtle difference in meaning, expression, or sound.',
-        examples: [
-          "I love the [nuances] in this movie — every scene means something.",
-          "Good writing captures the [nuance] of human emotion.",
-        ]
-      },
-      {
-        phrase: 'candid',
-        hero: "I appreciate your [candid] feedback — most people just say what I want to hear.",
-        meaning: 'Truthful and straightforward; not hiding your real thoughts.',
-        examples: [
-          "She was very [candid] about the challenges she faced.",
-          "Can I be [candid] with you for a second?",
-        ]
-      },
-      {
-        phrase: 'compelling',
-        hero: "His argument was so [compelling] that even his critics reconsidered.",
-        meaning: 'Extremely interesting or convincing; impossible to ignore.',
-        examples: [
-          "That's a [compelling] reason to change the approach.",
-          "She gave a [compelling] performance — the audience was silent.",
-        ]
-      },
-      {
-        phrase: 'elusive',
-        hero: "Success felt [elusive] — always just out of reach.",
-        meaning: 'Difficult to find, catch, or achieve; hard to pin down.',
-        examples: [
-          "The answer remained [elusive] even after hours of research.",
-          "Sleep has been [elusive] lately — my mind won't stop.",
-        ]
-      },
+      { phrase: 'nuance', hero: "There's a lot of [nuance] in the way he answered that question.", meaning: 'A subtle difference in meaning, expression, or sound.', examples: ["I love the [nuances] in this movie — every scene means something.", "Good writing captures the [nuance] of human emotion."] },
+      { phrase: 'candid', hero: "I appreciate your [candid] feedback — most people just say what I want to hear.", meaning: 'Truthful and straightforward; not hiding your real thoughts.', examples: ["She was very [candid] about the challenges she faced.", "Can I be [candid] with you for a second?"] },
+      { phrase: 'compelling', hero: "His argument was so [compelling] that even his critics reconsidered.", meaning: 'Extremely interesting or convincing; impossible to ignore.', examples: ["That's a [compelling] reason to change the approach.", "She gave a [compelling] performance — the audience was silent."] },
+      { phrase: 'elusive', hero: "Success felt [elusive] — always just out of reach.", meaning: 'Difficult to find, catch, or achieve; hard to pin down.', examples: ["The answer remained [elusive] even after hours of research.", "Sleep has been [elusive] lately — my mind won't stop."] },
     ]
   },
   idioms: {
-    title: 'Idioms',
-    sub: 'Expressions that mean more than the words themselves.',
-    color: '#B47FFF',
+    title: 'Idioms', sub: 'Expressions that mean more than the words themselves.', color: '#B47FFF',
     items: [
-      {
-        phrase: 'a piece of cake',
-        hero: "That test was [a piece of cake] — I finished in twenty minutes.",
-        meaning: 'Something that is very easy to do.',
-        examples: [
-          "Don't worry, the interview is [a piece of cake] if you prepare well.",
-          "That task you gave me? [A piece of cake].",
-        ]
-      },
-      {
-        phrase: 'let it slide',
-        hero: "The teacher [let that mistake slide] this time, but warned us not to repeat it.",
-        meaning: 'To allow something wrong to happen without punishing or correcting it.',
-        examples: [
-          "I know I was late again, but my boss [let it slide].",
-          "They can't keep [letting these problems slide] — it'll catch up with them.",
-        ]
-      },
-      {
-        phrase: 'on the fence',
-        hero: "I'm still [on the fence] about whether to accept the offer.",
-        meaning: 'Unable to decide between two options; undecided.',
-        examples: [
-          "She's been [on the fence] about moving abroad for months.",
-          "The voters are [on the fence] — it could go either way.",
-        ]
-      },
-      {
-        phrase: 'bite the bullet',
-        hero: "I just had to [bite the bullet] and have the difficult conversation.",
-        meaning: 'To endure a painful or unpleasant situation with courage.',
-        examples: [
-          "Just [bite the bullet] and apologize — it'll be fine.",
-          "She [bit the bullet] and signed up for the public speaking class.",
-        ]
-      },
+      { phrase: 'a piece of cake', hero: "That test was [a piece of cake] — I finished in twenty minutes.", meaning: 'Something that is very easy to do.', examples: ["Don't worry, the interview is [a piece of cake] if you prepare well.", "That task you gave me? [A piece of cake]."] },
+      { phrase: 'let it slide', hero: "The teacher [let that mistake slide] this time, but warned us not to repeat it.", meaning: 'To allow something wrong to happen without punishing or correcting it.', examples: ["I know I was late again, but my boss [let it slide].", "They can't keep [letting these problems slide] — it'll catch up with them."] },
+      { phrase: 'on the fence', hero: "I'm still [on the fence] about whether to accept the offer.", meaning: 'Unable to decide between two options; undecided.', examples: ["She's been [on the fence] about moving abroad for months.", "The voters are [on the fence] — it could go either way."] },
+      { phrase: 'bite the bullet', hero: "I just had to [bite the bullet] and have the difficult conversation.", meaning: 'To endure a painful or unpleasant situation with courage.', examples: ["Just [bite the bullet] and apologize — it'll be fine.", "She [bit the bullet] and signed up for the public speaking class."] },
     ]
   },
   shadowing: { title: 'Shadowing', sub: 'Coming soon.', color: '#aaa', items: [] },
@@ -836,22 +597,16 @@ const CATS = {
   progress: { title: 'Progress', sub: 'Your learning journey.', color: '#aaa', items: [] },
 };
 
-let current = 'daily';
-let cardIndex = 0;
-let autoPlay = true;
-let isPlaying = false;
+let current = 'daily', cardIndex = 0, autoPlay = true, isPlaying = false;
 const synth = window.speechSynthesis;
 
 function parseText(text, color) {
-  return text.replace(/\[([^\]]+)\]/g,
-    `<span class="hl" style="background:${color};color:#000;padding:1px 6px;border-radius:2px">$1</span>`);
+  return text.replace(/\[([^\]]+)\]/g, `<span class="hl" style="background:${color};color:#000;padding:1px 6px;border-radius:2px">$1</span>`);
 }
-
 function plain(t) { return t.replace(/\[([^\]]+)\]/g, '$1'); }
 
 function stopAll() {
-  synth.cancel();
-  isPlaying = false;
+  synth.cancel(); isPlaying = false;
   const btn = document.getElementById('btnPlay');
   const np  = document.getElementById('nowPlaying');
   if (btn) btn.textContent = '▶ play all';
@@ -860,34 +615,27 @@ function stopAll() {
 }
 
 function speakOne(text, btnEl) {
-  stopAll();
-  isPlaying = true;
+  stopAll(); isPlaying = true;
   if (btnEl) btnEl.classList.add('playing');
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-GB'; u.rate = 0.85;
-  u.onend = u.onerror = () => {
-    isPlaying = false;
-    if (btnEl) btnEl.classList.remove('playing');
-  };
+  u.onend = u.onerror = () => { isPlaying = false; if (btnEl) btnEl.classList.remove('playing'); };
   synth.speak(u);
 }
 
 function playSequence(item) {
-  stopAll();
-  isPlaying = true;
-  const btn    = document.getElementById('btnPlay');
-  const np     = document.getElementById('nowPlaying');
+  stopAll(); isPlaying = true;
+  const btn = document.getElementById('btnPlay');
+  const np  = document.getElementById('nowPlaying');
   const npText = document.getElementById('npText');
   if (btn) btn.textContent = '▶ playing...';
   if (np)  np.classList.add('show');
-
   const steps = [
-    { text: plain(item.hero),    label: 'sentence' },
-    { text: item.phrase,          label: 'phrase'   },
-    { text: item.meaning,         label: 'meaning'  },
+    { text: plain(item.hero), label: 'sentence' },
+    { text: item.phrase, label: 'phrase' },
+    { text: item.meaning, label: 'meaning' },
     ...item.examples.map((e, i) => ({ text: plain(e), label: `example ${i+1}` })),
   ];
-
   let i = 0;
   function next() {
     if (!isPlaying || i >= steps.length) { stopAll(); return; }
@@ -901,56 +649,45 @@ function playSequence(item) {
   next();
 }
 
-function buildLockCard(cat, item) {
-  const c = cat.color;
-  return `
-    <div class="lock-card">
-      <div class="card-top-bar" style="background:${c}"></div>
-      <div class="lock-card-inner">
-        <div class="hero-sentence">${parseText(item.hero, c)}</div>
-        <div style="margin-top:16px;font-size:1.6rem;font-weight:700;color:${c}">${item.phrase}</div>
-        <div style="margin-top:10px;font-size:0.95rem;opacity:0.6">${item.meaning}</div>
-      </div>
-      <div class="lock-overlay">
-        <div class="lock-icon">🔒</div>
-        <div class="lock-title">Unlock Full Access</div>
-        <div class="lock-sub">Get all ${cat.items.length} expressions in this pack</div>
-        <button class="btn-unlock" style="background:${c}" onclick="alert('Payment coming soon!')">Unlock Pack →</button>
-      </div>
-    </div>
-  `;
-}
-
 function buildTrack() {
-  const cat   = CATS[current];
+  const cat = CATS[current];
   const track = document.getElementById('swipeTrack');
   track.innerHTML = '';
-
   if (!cat.items.length) {
     track.innerHTML = `<div class="swipe-slide"><div class="empty">Coming soon.</div></div>`;
     return;
   }
-
   cat.items.forEach((item, idx) => {
     const slide = document.createElement('div');
     slide.className = 'swipe-slide';
-    const c       = cat.color;
+    const c = cat.color;
     const isLocked = idx >= FREE_LIMIT;
-
     if (isLocked) {
-      slide.innerHTML = buildLockCard(cat, item);
+      slide.innerHTML = `
+        <div class="lock-card">
+          <div class="card-top-bar" style="background:${c}"></div>
+          <div class="lock-card-inner">
+            <div style="font-size:1.4rem;font-weight:700;line-height:1.4;margin-bottom:12px">${parseText(item.hero, c)}</div>
+            <div style="font-size:1.4rem;font-weight:700;color:${c}">${item.phrase}</div>
+            <div style="margin-top:10px;font-size:0.9rem;opacity:0.6">${item.meaning}</div>
+          </div>
+          <div class="lock-overlay">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-title">Unlock Full Access</div>
+            <div class="lock-sub">Get all ${cat.items.length} expressions in this pack</div>
+            <button class="btn-unlock" style="background:${c}" onclick="alert('Payment coming soon!')">Unlock Pack →</button>
+          </div>
+        </div>`;
     } else {
       slide.innerHTML = `
         <div class="card">
           <div class="card-top-bar" style="background:${c}"></div>
           <div class="card-body">
-
             <div class="hero-block">
               <div class="section-label">example</div>
               <div class="hero-sentence">${parseText(item.hero, c)}</div>
               <button class="btn-listen-sm" onclick="speakOne('${plain(item.hero).replace(/'/g,"\\'")}', this)">▶ listen</button>
             </div>
-
             <div class="phrase-block">
               <div class="section-label">phrase</div>
               <div class="phrase-row">
@@ -965,7 +702,6 @@ function buildTrack() {
                 <div class="meaning-text">${item.meaning}</div>
               </div>
             </div>
-
             <div class="examples-block">
               <div class="section-label">more examples</div>
               ${item.examples.map(ex => `
@@ -975,10 +711,8 @@ function buildTrack() {
                     <div class="example-text">${parseText(ex, c)}</div>
                   </div>
                   <button class="btn-listen-sm" onclick="speakOne('${plain(ex).replace(/'/g,"\\'")}', this)">▶ listen</button>
-                </div>
-              `).join('')}
+                </div>`).join('')}
             </div>
-
             <div class="audio-bar">
               <button class="btn-play-all" id="btnPlay" style="background:${c}" onclick="playSequence(CATS['${current}'].items[${idx}])">▶ play all</button>
               <button class="btn-stop" onclick="stopAll()">◼ stop</button>
@@ -991,14 +725,11 @@ function buildTrack() {
                 <span id="npText"></span>
               </div>
             </div>
-
           </div>
-        </div>
-      `;
+        </div>`;
     }
     track.appendChild(slide);
   });
-
   updateTrackPosition(false);
 }
 
@@ -1011,38 +742,31 @@ function toggleMeaning(header) {
 }
 
 function updateTrackPosition(animate = true) {
-  const track     = document.getElementById('swipeTrack');
-  const container = document.getElementById('swipeContainer');
-  const w         = container.offsetWidth;
-  track.style.transition = animate
-    ? 'transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-    : 'none';
+  const track = document.getElementById('swipeTrack');
+  const w = document.getElementById('swipeContainer').offsetWidth;
+  track.style.transition = animate ? 'transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
   track.style.transform = `translateX(-${cardIndex * w}px)`;
   if (!animate) requestAnimationFrame(() => requestAnimationFrame(() => {
-    track.style.transition = 'transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    track.style.transition = 'transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
   }));
 }
 
 function updateUI() {
-  const cat   = CATS[current];
+  const cat = CATS[current];
   const total = cat.items.length;
-  document.getElementById('progressIndicator').textContent = total ? `${cardIndex + 1} / ${total}` : '';
+  document.getElementById('progressIndicator').textContent = total ? `${cardIndex+1} / ${total}` : '';
   document.getElementById('btnPrev').disabled = cardIndex === 0;
   document.getElementById('btnNext').disabled = cardIndex >= total - 1;
   document.getElementById('navRow').style.display = total ? 'flex' : 'none';
-
   document.getElementById('navDots').innerHTML = cat.items.map((_, i) => {
-    const locked  = i >= FREE_LIMIT;
-    const active  = i === cardIndex;
-    return `<div class="dot${active ? ' active' : ''}${locked ? ' locked' : ''}" onclick="${locked ? '' : `goTo(${i})`}"></div>`;
+    const locked = i >= FREE_LIMIT, active = i === cardIndex;
+    return `<div class="dot${active?' active':''}${locked?' locked':''}" onclick="${locked?'':` goTo(${i})`}"></div>`;
   }).join('');
 }
 
 function goTo(i) {
-  stopAll();
-  cardIndex = i;
-  updateTrackPosition(true);
-  updateUI();
+  stopAll(); cardIndex = i;
+  updateTrackPosition(true); updateUI();
   const item = CATS[current].items[i];
   if (autoPlay && item && i < FREE_LIMIT) setTimeout(() => playSequence(item), 400);
 }
@@ -1051,65 +775,70 @@ function prevCard() { if (cardIndex > 0) goTo(cardIndex - 1); }
 function nextCard() { if (cardIndex < CATS[current].items.length - 1) goTo(cardIndex + 1); }
 
 function switchCat(cat) {
-  stopAll();
-  current  = cat;
-  cardIndex = 0;
+  stopAll(); current = cat; cardIndex = 0;
   const data = CATS[cat];
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
   document.getElementById('nav-' + cat)?.classList.add('active');
+  document.getElementById('bnav-' + cat)?.classList.add('active');
   document.documentElement.style.setProperty('--active', data.color);
-  document.getElementById('pageCat').textContent  = data.title;
-  document.getElementById('pageSub').textContent  = data.sub;
-  buildTrack();
-  updateUI();
+  document.getElementById('pageCat').textContent = data.title;
+  document.getElementById('pageSub').textContent = data.sub;
+  buildTrack(); updateUI();
   if (autoPlay && data.items[0]) setTimeout(() => playSequence(data.items[0]), 400);
 }
 
 function toggleTheme() {
   document.body.classList.toggle('dark');
-  document.getElementById('themeToggle').classList.toggle('on');
+  document.getElementById('themeToggle')?.classList.toggle('on');
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = document.body.classList.contains('dark') ? '☀️ light' : '🌙 dark';
 }
 
 function toggleAutoPlay() {
   autoPlay = !autoPlay;
-  document.getElementById('autoPlayToggle').classList.toggle('on', autoPlay);
+  document.getElementById('autoPlayToggle')?.classList.toggle('on', autoPlay);
+  const btn = document.getElementById('autoBtn');
+  if (btn) btn.textContent = autoPlay ? '⏸ auto' : '▶ auto';
 }
 
-// ── SWIPE ──
+// Swipe
 (function() {
   let startX = 0, isDragging = false, dragDelta = 0;
-  const THRESHOLD = 60;
+  const THRESHOLD = 50;
   const getTrack = () => document.getElementById('swipeTrack');
-  const getW     = () => document.getElementById('swipeContainer').offsetWidth;
+  const getW = () => document.getElementById('swipeContainer').offsetWidth;
 
   function onStart(x) { startX = x; isDragging = true; dragDelta = 0; getTrack().style.transition = 'none'; }
-  function onMove(x)  { if (!isDragging) return; dragDelta = x - startX; getTrack().style.transform = `translateX(${-(cardIndex * getW()) + dragDelta}px)`; }
-  function onEnd()    {
+  function onMove(x) { if (!isDragging) return; dragDelta = x - startX; getTrack().style.transform = `translateX(${-(cardIndex * getW()) + dragDelta}px)`; }
+  function onEnd() {
     if (!isDragging) return; isDragging = false;
-    if      (dragDelta < -THRESHOLD) nextCard();
-    else if (dragDelta >  THRESHOLD) prevCard();
+    if (dragDelta < -THRESHOLD) nextCard();
+    else if (dragDelta > THRESHOLD) prevCard();
     else updateTrackPosition(true);
   }
 
-  document.addEventListener('mousedown',  e => { if (e.target.closest('#swipeContainer')) { e.preventDefault(); onStart(e.clientX); } });
-  document.addEventListener('mousemove',  e => { if (isDragging) onMove(e.clientX); });
-  document.addEventListener('mouseup',    () => onEnd());
+  document.addEventListener('mousedown', e => { if (e.target.closest('#swipeContainer')) { e.preventDefault(); onStart(e.clientX); } });
+  document.addEventListener('mousemove', e => { if (isDragging) onMove(e.clientX); });
+  document.addEventListener('mouseup', () => onEnd());
   document.addEventListener('touchstart', e => { if (e.target.closest('#swipeContainer')) onStart(e.touches[0].clientX); }, { passive: true });
-  document.addEventListener('touchmove',  e => { if (isDragging) onMove(e.touches[0].clientX); }, { passive: true });
-  document.addEventListener('touchend',   () => onEnd());
-  window.addEventListener('resize',       () => updateTrackPosition(false));
+  document.addEventListener('touchmove', e => { if (isDragging) onMove(e.touches[0].clientX); }, { passive: true });
+  document.addEventListener('touchend', () => onEnd());
+  window.addEventListener('resize', () => updateTrackPosition(false));
 })();
 
-// ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') nextCard();
-  if (e.key === 'ArrowLeft')  prevCard();
+  if (e.key === 'ArrowLeft') prevCard();
   if (e.key === ' ') { e.preventDefault(); isPlaying ? stopAll() : playSequence(CATS[current].items[cardIndex]); }
 });
 
-// Init
-buildTrack();
-updateUI();
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+buildTrack(); updateUI();
 if (autoPlay && CATS[current].items[0]) setTimeout(() => playSequence(CATS[current].items[0]), 600);
 </script>
 </body>
