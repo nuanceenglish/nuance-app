@@ -692,8 +692,6 @@ document.addEventListener('keydown',e=>{
   if(e.key===' '){e.preventDefault();isPlaying?stopAll():playSequence(CATS[current].items[cardIndex]);}
 });
 
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
-
 // ── SUPABASE LOAD ──
 async function loadCards(){
   const {data,error} = await db.from('cards').select('*').order('id');
