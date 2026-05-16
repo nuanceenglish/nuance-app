@@ -657,8 +657,7 @@ function toggleAutoPlay(){
 // ── SWIPE ──
 (function(){
   let startX=0,startY=0,isDragging=false,dragDelta=0,isHoriz=null;
-  const THRESHOLD=50,LOCK_ANGLE=10;
-
+  const THRESHOLD=40,LOCK_ANGLE=15;
   function onStart(x,y){startX=x;startY=y;isDragging=true;dragDelta=0;isHoriz=null;document.getElementById('swipeTrack').style.transition='none';}
   function onMove(x,y){
     if(!isDragging) return;
