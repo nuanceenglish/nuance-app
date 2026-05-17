@@ -431,6 +431,11 @@ function checkMobile(){
     layout.style.gridTemplateColumns='1fr';
     main.style.padding='12px 12px calc(68px + 20px)';
     main.style.maxWidth='100%';
+
+    requestAnimationFrame(() => {
+  rebuildSlideWidths();
+  setTrackPos(false);
+});
   } else {
     topbar.style.display='none';
     bnav.style.display='none';
