@@ -430,7 +430,10 @@ function checkMobile(){
 
 checkMobile();
 window.addEventListener('resize',()=>{ checkMobile(); rebuildSlideWidths(); });
-
+setTimeout(() => {
+  rebuildSlideWidths();
+  setTrackPos(false);
+}, 50);
 // ── TEXT HELPERS ──
 function parseText(t,c){
   return t.replace(/\[([^\]]+)\]/g,`<span class="hl" style="background:${c};color:#000;padding:1px 6px;border-radius:2px">$1</span>`);
