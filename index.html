@@ -754,6 +754,11 @@ async function loadCards(){
 }
 
 loadCards();
+buildTrack();
+setTimeout(() => {
+  rebuildSlideWidths();
+  setTrackPos(false);
+}, 50);
 </script>
 </body>
 </html>
