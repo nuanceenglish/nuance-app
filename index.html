@@ -504,15 +504,20 @@ function playSequence(item){
 function getW(){ return document.getElementById('swipeOuter').clientWidth||window.innerWidth; }
 
 function rebuildSlideWidths(){
-  const w=getW();
-  const track=document.getElementById('swipeTrack');
-  const slides=track.querySelectorAll('.swipe-slide');
+  const w = getW();
+  const track = document.getElementById('swipeTrack');
+  const slides = track.querySelectorAll('.swipe-slide');
   if(!slides.length) return;
-  track.style.width=(w*slides.length)+'px';
-  slides.forEach(s=>s.style.width=w+'px');
-  setTrackPos(false);
-}
 
+  track.style.width = (w * slides.length) + 'px';
+  slides.forEach(s => {
+    s.style.width = w + 'px';
+    s.style.minWidth = w + 'px';
+    s.style.flex = '0 0 auto';
+  });
+
+  requestAnimationFrame(() => setTrackPos(false));
+}
 // ── BUILD TRACK ──
 function buildTrack(){
   const cat=CATS[current];
