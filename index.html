@@ -434,7 +434,7 @@ function checkMobile(){
 
     requestAnimationFrame(() => {
   rebuildSlideWidths();
-  setTrackPos(false);
+  
 });
   } else {
     topbar.style.display='none';
@@ -450,7 +450,7 @@ checkMobile();
 window.addEventListener('resize',()=>{ checkMobile(); rebuildSlideWidths(); });
 setTimeout(() => {
   rebuildSlideWidths();
-  setTrackPos(false);
+ 
 }, 50);
 // ── TEXT HELPERS ──
 function parseText(t,c){
