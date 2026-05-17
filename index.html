@@ -545,6 +545,8 @@ function buildTrack(){
     const slide=document.createElement('div');
     slide.className='swipe-slide';
     slide.style.width=w+'px';
+    slide.style.minWidth=w+'px';
+    slide.style.flex='0 0 auto';
     const c=cat.color;
     const locked=idx>=FREE_LIMIT;
 
