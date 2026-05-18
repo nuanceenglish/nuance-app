@@ -793,12 +793,14 @@ async function loadCards(){
   buildTrack();
 }
 
-loadCards();
-buildTrack();
-setTimeout(() => {
-  rebuildSlideWidths();
-  setTrackPos(false);
-}, 50);
+(async () => {
+  await loadUserRole();
+  await loadCards();
+  setTimeout(() => {
+    rebuildSlideWidths();
+    setTrackPos(false);
+  }, 50);
+})();
 </script>
 </body>
 </html>
