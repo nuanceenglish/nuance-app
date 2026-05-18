@@ -776,6 +776,7 @@ async function loadUserRole() {
 
   if (!error && data?.role === 'admin') {
     isAdmin = true;
+    console.log('admin mı:', isAdmin);
   }
 }
 // Load Supabase
