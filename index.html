@@ -563,7 +563,7 @@ function buildTrack(){
     slide.style.minWidth=w+'px';
     slide.style.flex='0 0 auto';
     const c=cat.color;
-    const locked=idx>=FREE_LIMIT;
+    const locked=!isAdmin && idx>=FREE_LIMIT;
 
     if(locked){
       slide.innerHTML=`
