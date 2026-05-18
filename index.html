@@ -790,6 +790,8 @@ async function loadCards(){
       :(typeof card.examples==='string'?JSON.parse(card.examples):[]);
     CATS[cat].items.push({phrase:card.phrase,hero:card.hero,meaning:card.meaning,examples});
   });
+console.log('cards yüklendi:', data);
+console.log('cards hata:', error);
   buildTrack();
 }
 console.log('startup başladı');
