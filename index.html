@@ -567,7 +567,13 @@ body.light .lock-overlay { background: rgba(245,240,232,0.8); }
     <div class="bnav-item" id="bnav-favorites"><div class="bnav-dot"></div><span class="bnav-label">Saved</span></div>
   </div>
 </div>
+const SUPABASE_URL = 'https://xlfgnhcltpqdtgmdjjwp.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_g-rss6x_6TP5iwpNx2dpzw_J_Kdt4Jm';
 
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 <script>
 const SUPABASE_URL='https://xlfgnhcltpqdtgmdjjwp.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZmduaGNsdHBxZHRnbWRqandwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4ODQ4ODMsImV4cCI6MjA5NDQ2MDg4M30.p8xggEvLrAAw5GuLsQu9XQLtreo715KJg1H6OEgKL2w';
