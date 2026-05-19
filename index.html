@@ -810,45 +810,81 @@ function buildTrack(){
   updateUI();
   if(autoPlay&&cat.items[0]&&cardIndex<FREE_LIMIT) setTimeout(()=>playSequence(cat.items[0]),600);
 }
-async function signUp() {
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+ async function signUp() {
 
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password
-  });
+  try {
 
-  if (error) {
-    document.getElementById('authMsg').innerText = error.message;
-    return;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    document.getElementById('authMsg').innerText =
+      'Creating account...';
+
+    const { data, error } =
+      await supabaseClient.auth.signUp({
+        email,
+        password
+      });
+
+    console.log(data);
+    console.log(error);
+
+    if (error) {
+      document.getElementById('authMsg').innerText =
+        error.message;
+      return;
+    }
+
+    document.getElementById('authMsg').innerText =
+      'Account created successfully';
+
+  } catch (err) {
+
+    console.error(err);
+
+    document.getElementById('authMsg').innerText =
+      err.message;
   }
-
-  document.getElementById('authMsg').innerText =
-    'Account created successfully';
-}
+} 
 
 async function signIn() {
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  try {
 
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-  if (error) {
-    document.getElementById('authMsg').innerText = error.message;
-    return;
+    document.getElementById('authMsg').innerText =
+      'Logging in...';
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    console.log(data);
+    console.log(error);
+
+    if (error) {
+      document.getElementById('authMsg').innerText =
+        error.message;
+      return;
+    }
+
+    document.getElementById('authMsg').innerText =
+      'Login successful';
+
+    document.getElementById('authBox').style.display = 'none';
+
+  } catch (err) {
+
+    console.error(err);
+
+    document.getElementById('authMsg').innerText =
+      err.message;
   }
-
-  document.getElementById('authMsg').innerText =
-    'Login successful';
-
-  document.getElementById('authBox').style.display = 'none';
 }
 // ── TRACK POSITION: uses CSS 100% width, so offset = index * outerWidth ──
 function setTrackPos(animate){
