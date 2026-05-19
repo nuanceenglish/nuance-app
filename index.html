@@ -498,6 +498,52 @@ body.light .lock-overlay { background: rgba(245,240,232,0.8); }
 
 </style>
 </head>
+  <div id="authBox" style="
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+">
+
+  <div style="
+  width:320px;
+  background:#111;
+  padding:24px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  ">
+
+    <h2 style="margin:0;">Nuance Login</h2>
+
+    <input id="email"
+      type="email"
+      placeholder="Email"
+      style="padding:12px;"
+    />
+
+    <input id="password"
+      type="password"
+      placeholder="Password"
+      style="padding:12px;"
+    />
+
+    <button onclick="signUp()" style="padding:12px;">
+      Sign Up
+    </button>
+
+    <button onclick="signIn()" style="padding:12px;">
+      Login
+    </button>
+
+    <div id="authMsg"></div>
+
+  </div>
+</div>
 <body>
 
 <div class="layout">
