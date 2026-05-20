@@ -726,7 +726,7 @@ async function doBulkInsert(cards){
       phrase: String(c.phrase||'').trim(),
       hero:   String(c.hero||'').trim(),
       meaning:String(c.meaning||'').trim(),
-      examples:Array.isArray(c.examples)?c.examples:(c.examples?[c.examples]:[]),
+      examples:JSON.stringify(Array.isArray(c.examples)?c.examples:(c.examples?[c.examples]:[])),
       category:String(c.category||adminCurCat).trim(),
     })).filter(c=>c.phrase&&c.hero&&c.meaning);
     if(!batch.length)continue;
